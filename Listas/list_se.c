@@ -1,64 +1,55 @@
 #include "list_se.h"
+#include "nodo_se.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 
 void lse_crear(list_se *list)
 {
-    list = (list_se*)malloc(sizeof(list_se));
+    list = (list_se *)malloc(sizeof(list_se));
     list->prin = NULL;
     list->elements = 0;
 }
 
-
 void lse_insertar_inicio(list_se *list, int elem)
 {
-    nodo_se *nuevo_nodo = (nodo_se *)malloc(sizeof(nodo_se));
-    nuevo_nodo->dato = elem;
+    nodo_se *nuevo_nodo = crearNodo(nuevo_nodo, elem);
     nuevo_nodo->next = list->prin;
     list->prin = nuevo_nodo;
     list->elements++;
 }
 
-
+//La lista debe de tener al menos un elemento
 void lse_insertar_final(list_se *list, int elem)
 {
     nodo_se *aux;
-    nodo_se *nuevo_nodo = (nodo_se *)malloc(sizeof(nodo_se));
-    nuevo_nodo->dato = elem;
-    nuevo_nodo->next = NULL;
+    nodo_se *nuevo_nodo = crearNodo(nuevo_nodo, elem);
     aux = list->prin;
     while(aux->next != NULL)
     {
         aux = aux->next;
     }
     aux->next = nuevo_nodo;
+    list->elements++;
+    free(aux);
 }
 
 
 void lse_insertar_en(list_se *list, int elem, int pos)
 {
-    if(pos > list->elements + 1 || pos < 1)
-    {
-        printf("Error, posicion invalida");
-        return;
-    }
-
-    if(pos == list->elements + 1)
+    if(pos >= list->elements + 1)
     {
         lse_insertar_final(list, elem);
     }else
     {
     
-        if(pos == 1)
+        if(pos <= 1)
         {
             lse_insertar_inicio(list, elem);
         }else
         {
             int i;
-            nodo_se *aux;
-            nodo_se *nuevo_nodo = (nodo_se *)malloc(sizeof(nodo_se));
-            nuevo_nodo->dato = elem;
+            nodo_se *nuevo_nodo = crearNodo(nuevo_nodo, elem), *aux;
             aux = list->prin;
             for(i = 1; i < pos; i++)
             {
@@ -67,6 +58,7 @@ void lse_insertar_en(list_se *list, int elem, int pos)
             nuevo_nodo->next = aux->next;
             aux->next = nuevo_nodo;
             list->elements++;
+            free(aux);
         }
     }
 
@@ -78,7 +70,7 @@ void lse_quitar_inicio(list_se *list)
     nodo_se *quit_nodo = list->prin;
     if(quit_nodo == NULL)
     {
-        printf("La lista está vacía");
+        printf("La lista está vacía\n\n");
         free(quit_nodo);
         return;
     }
@@ -95,7 +87,7 @@ void lse_quitar_final(list_se *list)
     nodo_se *quit_nodo = list->prin;
     if(quit_nodo == NULL)
     {
-        printf("La lista está vacía");
+        printf("La lista está vacía\n\n");
         free(quit_nodo);
         return;
     }
@@ -115,18 +107,12 @@ void lse_quitar_final(list_se *list)
 
 void lse_quitar_en(list_se *list, int pos)
 {
-    if(pos > list->elements || pos < 1)
-    {
-        printf("Error, posicion invalida");
-        return;
-    }
-
-    if(pos == 1)
+    if(pos <= 1)
     {
         lse_quitar_inicio(list);
     }else
     {
-        if(pos == list->elements)
+        if(pos >= list->elements)
         {
             lse_quitar_final(list);
         }else
@@ -186,25 +172,19 @@ int lse_consultar_en(list_se *list, int pos)
         return -1;
     }
 
-    if(pos > list->elements || pos < 1)
-    {
-        printf("Error, posicion invalida");
-        return -1;
-    }
-
-    if(pos == 1)
+    if(pos <= 1)
     {
         return lse_consultar_inicio(list);
     }else
     {
-        if(pos == list->elements)
+        if(pos >= list->elements)
         {
             return lse_consultar_final(list);
         }else
         {
             int i;
             nodo_se *aux = list->prin;
-            for(i = 1; i >= pos; i++)
+            for(i = 1; i < pos; i++)
             {
                 aux = aux->next;
             }

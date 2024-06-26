@@ -6,4 +6,6 @@ typedef struct nodo{
     struct nodo *next;
 } nodo_se;
 
+nodo_se* crearNodo(nodo_se* nuevo, int elem);
+
 #endif
